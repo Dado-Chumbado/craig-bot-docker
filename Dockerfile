@@ -1,10 +1,15 @@
-FROM ubuntu:cosmic
+FROM ubuntu:focal
 
 ENV FFMPEG_VERSION=4.0.2
 
 WORKDIR /opt/build
 
 RUN apt-get update
+
+# tzdata
+ENV TZ=America/Sao_Paulo
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 RUN apt-get -y install curl nasm tar bzip2 make 
 RUN apt-get -y install libopus-dev libopusfile-dev libogg-ocaml-dev
 RUN apt-get -y install libvorbis-dev libmp3lame-dev libass-dev
@@ -27,9 +32,9 @@ RUN make install
 RUN echo make distclean
 
 WORKDIR /opt/build
-RUN curl https://bitbucket.org/Yahweasel/craig/get/529f2decdb8d.zip -o craig.zip 
+RUN curl https://codeload.github.com/Yahweasel/craig/zip/master -o craig.zip 
 RUN unzip craig.zip
-RUN ln -s Yahweasel-craig-529f2decdb8d craig
+RUN ln -s craig-master craig
 
 WORKDIR /opt/build
 
@@ -53,8 +58,10 @@ RUN npm install sodium
 RUN pwd
 #RUN ./configure
 RUN npm install
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y install software-properties-common
+RUN DEBIAN_FRONTEND=noninteractive add-apt-repository -y ppa:ondrej/php
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y install php7.2-intl php7.2-cli tzdata 
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y install php7.2-intl php7.2-cli  
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install nginx-extras
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install php7.3 php7.2-fpm php7.2-common php7.2-curl php7.2-dev php7.2-gd php7.2-imagick php7.2-memcache php7.2-mysql php7.2-pspell php7.2-snmp php7.2-sqlite php7.2-xmlrpc php7.2-xsl php-pear php7.2-cli
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install flac at inkscape
