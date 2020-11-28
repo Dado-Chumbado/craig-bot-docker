@@ -86,6 +86,8 @@ COPY nginx.conf /etc/nginx/sites-enabled/default
 
 CMD chmod a+rw . -R
 
+EXPOSE 80:80
+
 ENTRYPOINT ["bash", "run.sh"]
 CMD ["token", "url"]
 
